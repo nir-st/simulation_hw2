@@ -13,5 +13,3 @@ if __name__ == '__main__':
     simulation = Simulation(room, entities, guides)
     simulation.run_simulate()
     print("done")
-
-
