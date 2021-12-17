@@ -15,8 +15,8 @@ class Entity:
     def set_position_at_k(self, position):
         self.positions.append(position)
 
-    def get_direction_to_door(self, room, k):
-        curr_position = self.get_position_at_k(k)
+    def get_direction_to_door(self, room):
+        curr_position = self.get_position_at_k(self.positions[len(self.positions) - 1])
         door_positions = room.get_door_locations()
         if curr_position.distance_to(door_positions[0]) < curr_position.distance_to(door_positions[1]):
             return curr_position.direction_to(door_positions[0])
