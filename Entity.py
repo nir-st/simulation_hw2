@@ -20,7 +20,7 @@ class Entity:
         curr_possition = self.get_position_at_k(k)
         door_positions = room.get_door_locations()
 
-        if curr_possition.distance_to( door_positions[0])<curr_possition.distance_to( door_positions[1]):
+        if curr_possition.distance_to( door_positions[0])<curr_possition.distance_to(door_positions[1]):
             return curr_possition.direction_to(door_positions[0])
         return curr_possition.direction_to(door_positions[1])
 

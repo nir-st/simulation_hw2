@@ -4,6 +4,7 @@ class room:
         self.length= length
 
         self.doors_locations= doors_locations
+
     def get_doors_locations(self):
         return self.doors_locations
 
