@@ -9,25 +9,36 @@ class Simulation():
     def run_simulate(self):
         for guide in self.guides:
             guide.find_direction_to_door(self.room)
-        while self.current_time < 5000:
+        while self.current_time < 50000 and (self.guides or self.entities):
             self.run_interval()
             self.current_time = self.current_time + 1
+        print(self.guides[0].positions)
 
     def run_interval(self):
+        guides_to_remove = []
         for guide in self.guides:
             desired_location = guide.get_desired_location()
-            if (self.is_location_available(desired_location)):
+            if (self.is_location_available(desired_location, guide)):
+                guide.set_position_at_k(desired_location)
+                if guide.is_at_door(self.room.get_doors_locations()):
+                    print("the guide is out")
+                    guides_to_remove.append(guide)
+        for guide in guides_to_remove:
+            self.guides.remove(guide)
 
 
 
-    def is_location_available(self, location):
+    def is_location_available(self, location, excluded_entity):
         # add walls
         for entity in self.entities:
-            if entity.get_position_at_k(self.current_time).is_inside_position(location, 1):
-                return False
+            if excluded_entity != entity:
+                if entity.get_position_at_k(self.current_time).is_inside_position(location, 1):
+                    return False
         for guide in self.guides:
-            if guide.get_position_at_k(self.current_time).is_inside_position(location, 1):
-                return False
+            if excluded_entity != guide:
+                if guide.get_position_at_k(self.current_time).is_inside_radius(location, 1):
+                    return False
+        return True
 
 
 

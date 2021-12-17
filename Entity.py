@@ -12,8 +12,8 @@ class Entity:
     def get_position_at_k(self, k):
         return self.positions[k]
 
-    def set_position_at_k(self, k, position):
-        self.positions[k] = position
+    def set_position_at_k(self, position):
+        self.positions.append(position)
 
     def get_direction_to_door(self, room, k):
         curr_position = self.get_position_at_k(k)
@@ -23,8 +23,9 @@ class Entity:
         return curr_position.direction_to(door_positions[1])
 
     def is_at_door(self, doors):
-        last= len(self.positions)-1
-        curr_pos = self.get_position_at_k(self.positions[last])
+        print("is_at_door")
+        last = len(self.positions)-1
+        curr_pos = self.get_position_at_k(last)
         for door in doors:
             if door.is_inside_radius(curr_pos, 0.5):
                 return True
