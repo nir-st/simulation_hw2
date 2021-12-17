@@ -27,7 +27,7 @@ class Entity:
         last= len(self.positions)-1
         curr_pos = self.get_position_at_k(self.positions[last])
         for door in doors:
-            if door.distance_to(curr_pos)==0.0:
+            if door.is_inside_radius(curr_pos, 0.5):
                 return True
         return False
 
