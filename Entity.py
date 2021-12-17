@@ -2,6 +2,7 @@ class Entity:
     def _init_(self, starting_position, velocity):
         self.velocity = velocity
         self.location = []
+        self.location[0] = starting_position
 
     def _disired_location(self,x, y):
         self._disired_location = (x, y)
