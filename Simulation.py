@@ -1,32 +1,35 @@
-class Simulation():
-    def __init__(self, room, entities, guides):
+import math
+import random
+
+
+class Simulation:
+    def __init__(self, room, entities, guides, visible_distance=20):
         self.room = room
         self.entities = entities
         self.guides = guides
         self.is_simulating = False
-        self.current_time = 0
+        self.current_time = 0  # k
+        self.visible_distance = visible_distance
 
     def run_simulate(self):
         for guide in self.guides:
             guide.find_direction_to_door(self.room)
-        while self.current_time < 50000 and (self.guides or self.entities):
+        while self.current_time < 5000 and (self.guides or self.entities):
             self.run_interval()
             self.current_time = self.current_time + 1
-        print(self.guides[0].positions)
+        print(f'finished in {self.current_time * 0.02} seconds')
 
     def run_interval(self):
-        guides_to_remove = []
-        for guide in self.guides:
-            desired_location = guide.get_desired_location()
-            if (self.is_location_available(desired_location, guide)):
-                guide.set_position_at_k(desired_location)
-                if guide.is_at_door(self.room.get_doors_locations()):
-                    print("the guide is out")
-                    guides_to_remove.append(guide)
-        for guide in guides_to_remove:
-            self.guides.remove(guide)
+        self.move_guides()
+        self.move_entities()
 
-
+    def move_entity_randomly(self, entity):
+        random_direction = random.randint(0, 360)
+        desired_position = entity.get_desired_location(random_direction)
+        while not self.check_valid_position(desired_position):
+            random_direction = random.randint(0, 360)
+            desired_position = entity.get_desired_location(random_direction)
+        return random_direction
 
     def is_location_available(self, location, excluded_entity):
         # add walls
@@ -40,48 +43,77 @@ class Simulation():
                     return False
         return True
 
-    def check_valid_move(self, position):
-        if position.x<=0 or position.x>= self.room.get_width() or position.y<=0 or position.y>=self.room.get_length():
+    def move_guides(self):
+        guides_to_remove = []
+        for guide in self.guides:
+            desired_location = guide.get_desired_location()
+            if self.is_location_available(desired_location, guide):
+                guide.set_position_at_k(desired_location)
+                if guide.is_near_door(self.room.get_doors_locations(), 0.3):
+                    guides_to_remove.append(guide)
+        for guide in guides_to_remove:
+            self.guides.remove(guide)
+
+    def check_valid_position(self, position):
+        if position.x <= 0 or position.x >= self.room.get_width() or position.y <= 0 or position.y >= self.room.get_length():
             return False
         return True
 
+    def move_entities(self):
+        # if close enough to the door, go to it
+        # else: if close enough to a guide, go to it (probably will make it stuck because he will
+        #                                             stand in the guide's way. maybe if he near
+        #                                             a guide he just walks to the door's direction..)
+        # else: if close enough to entity, go to it
+        # else: random direction
+        entities_to_remove = []
+        for entity in self.entities:
+            if entity.is_near_door(self.room.get_doors_locations(), self.visible_distance):
+                desired_direction = entity.get_direction_to_door(self.room)
+            else:
+                nearest_guide = self.get_nearest_guide(entity)
+                if nearest_guide:
+                    desired_direction = entity.get_position_at_k(self.current_time).direction_to(nearest_guide.get_position_at_k(self.current_time))
+                else:
+                    nearest_entity = self.get_nearest_entity(entity)
+                    if nearest_entity:
+                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(nearest_entity.get_position_at_k(self.current_time))
+                    else:
+                        desired_direction = self.move_entity_randomly(entity)
+            desired_location = entity.get_desired_location(desired_direction)
+            if self.is_location_available(desired_location, entity):
+                entity.set_position_at_k(desired_location)
+                if entity.is_near_door(self.room.get_doors_locations(), 0.3):
+                    entities_to_remove.append(entity)
+        for entity in entities_to_remove:
+            self.entities.remove(entity)
+            entity.exit()
 
+    def get_nearest_guide(self, entity):
+        min_dis = self.room.get_maximum_distance()
+        nearest_guide = None
+        for guide in self.guides:
+            entitys_pos = entity.get_position_at_k(self.current_time)
+            guides_pos = guide.get_position_at_k(self.current_time)
+            distance = entitys_pos.distance_to(guides_pos)
+            if distance < min_dis:
+                min_dis = distance
+                nearest_guide = guide
+        if min_dis <= self.visible_distance:
+            return nearest_guide
+        return None
 
-
-
-
-
-
-
-# funciton move():
-# 		while not has_finished:
-#
-# 			exited_guides = []
-# 			exited_entites = []
-#
-# 			for guide in guides_in_room:
-# 				preferred_direction = get_direction_to_door(guide.get_location(), guide.is_know_about_left_door)
-# 				desired_location = guide.get_desired_location(preferred_direction)
-# 				if not is_occupied(desired_location):
-# 					guide.move(desired_location)
-# 				if has_exited(guide):
-# 					exited_guides.add(guide)
-#
-# 			for entity in entities_in_room:
-# 				preferred_direction = entity.get_previous_direction()
-# 				if is_near_door(entity):
-# 					preferred_direction = get_direction_to_door(entity.get_location())
-# 				elif len(guides_in_room) > 0:
-# 					preferred_direction = get_directino_to_nearest_guide(entity)
-# 				desired_location = entity.get_desired_location(preferred_location)
-# 				if not is_ocupied(desired_location):
-# 					entity.move(desired_location)
-# 				is has_exited(guide):
-# 					exited_entities.add(guide)
-#
-# 				for guide in exited_guides:
-# 					guides_in_room.remove(guide)
-#
-# 				for entity in exited_entities:
-# 					entities_in_room.remove(entity)
-# class Simulation:
+    def get_nearest_entity(self, excluded_entity):
+        min_dis = self.room.get_maximum_distance()
+        nearest_entity = None
+        for entity in self.entities:
+            if entity != excluded_entity:
+                excluded_entitys_pos = excluded_entity.get_position_at_k(self.current_time)
+                entitys_pos = entity.get_position_at_k(self.current_time)
+                distance = excluded_entitys_pos.distance_to(entity_pos)
+                if distance < min_dis:
+                    min_dis = distance
+                    nearest_entity = entity
+        if min_dis <= self.visible_distance:
+            return nearest_entity
+        return None
