@@ -4,7 +4,6 @@ class Entity:
         self.positions = []  # array of positions
         self.positions.append(starting_position)
 
-
     def get_desired_location(self, desired_direction):
         current_position = self.positions[len(self.positions) - 1]
         distance = self.velocity * 0.02
@@ -23,12 +22,10 @@ class Entity:
             return curr_position.direction_to(door_positions[0])
         return curr_position.direction_to(door_positions[1])
 
-    def is_at_door(self,doors):
+    def is_at_door(self, doors):
         last= len(self.positions)-1
         curr_pos = self.get_position_at_k(self.positions[last])
         for door in doors:
             if door.is_inside_radius(curr_pos, 0.5):
                 return True
         return False
-
-
