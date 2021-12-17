@@ -22,10 +22,10 @@ class Entity:
             return curr_position.direction_to(door_positions[0])
         return curr_position.direction_to(door_positions[1])
 
-    def is_near_door(self, doors, radius):
+    def is_near_door(self, door_positions, radius):
         last = len(self.positions) - 1
         curr_pos = self.get_position_at_k(last)
-        for door in doors:
+        for door_position in door_positions:
             if door.is_inside_radius(curr_pos, radius):
                 return True
         return False
