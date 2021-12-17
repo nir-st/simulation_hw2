@@ -1,4 +1,3 @@
-
 class Simulation():
     def __init__(self, room, entities, guides):
         self.room = room
