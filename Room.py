@@ -6,6 +6,7 @@ class Room:
         self.width = width
         self.length = length
         self.doors_locations = doors_locations
+        self.maximum_distance = math.sqrt(math.pow(length, 2) + math.pow(width, 2))
 
     def get_doors_locations(self):
         return self.doors_locations
@@ -16,5 +17,5 @@ class Room:
     def get_width(self):
         return self.width
 
-    def get_maximum_distance():
-        return math.sqrt(math.pow(selfwidth(), 2) + math.pow(self.width, 2))
+    def get_maximum_distance(self):
+        return self.maximum_distance
