@@ -1,20 +1,17 @@
-# This is a sample Python script.
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from Room import Room
+from Simulation import Simulation
+from Guide import Guide
+from Position import Position
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-def print_amit(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 t toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    room = Room(20, 20, [Position(20, 10)])
+    guide = Guide(Position(10, 10), 1.5, True)
+    entities = []
+    guides = [guide]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    simulation = Simulation(room, entities, guides)
+    simulation.run_simulate()
+    print("done")
+
+
