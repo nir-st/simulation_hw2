@@ -20,6 +20,9 @@ class Position:
         new_y = self.y + distance * math.sin(direction * math.pi / 180)
         return Position(new_x, new_y)
 
+    def is_inside_radius(self, other_position, radius):
+        return (math.pow(self.x - other_position.x), 2) + (math.pow(self.y - other_position.y), 2) < math.pow(radius, 2)
+
     def __repr__(self):
         return "(" + str(self.x) + ", " + str(self.y) + ")"
 
