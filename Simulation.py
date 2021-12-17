@@ -8,24 +8,27 @@ class Simulation():
         self.current_time = 0
 
     def run_simulate(self):
+        for guide in self.guides:
+            guide.find_direction_to_door(self.room)
         while self.current_time < 5000:
             self.run_interval()
             self.current_time = self.current_time + 1
 
     def run_interval(self):
         for guide in self.guides:
-            self.get_direction_to_door(guide)
-            # guide.get_desired_location(room.)
+            desired_location = guide.get_desired_location()
+            if (self.is_location_available(desired_location)):
 
 
-    def get_direction_to_door(self, guide):
-        guide_possition = guide.get_position_at_k(self.current_time)
-        door_positions = self.room.get_door_locations()
-        if guide.knows_one_door:
-            door_position = door_positions[0]
-        else:
-            # if guide_possition.distance_to
-            # door_position =
+
+    def is_location_available(self, location):
+        # add walls
+        for entity in self.entities:
+            if entity.get_position_at_k(self.current_time).is_inside_position(location, 1):
+                return False
+        for guide in self.guides:
+            if guide.get_position_at_k(self.current_time).is_inside_position(location, 1):
+                return False
 
 
 
