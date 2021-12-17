@@ -35,11 +35,11 @@ class Simulation:
         # add walls
         for entity in self.entities:
             if excluded_entity != entity:
-                if entity.get_position_at_k(self.current_time).is_inside_position(location, 1):
+                if entity.get_position_at_k(self.current_time).is_inside_radius(location, 0.3):
                     return False
         for guide in self.guides:
             if excluded_entity != guide:
-                if guide.get_position_at_k(self.current_time).is_inside_radius(location, 1):
+                if guide.get_position_at_k(self.current_time).is_inside_radius(location, 0.5):
                     return False
         return True
 
@@ -53,6 +53,7 @@ class Simulation:
                     guides_to_remove.append(guide)
         for guide in guides_to_remove:
             self.guides.remove(guide)
+            self.got_out_guides.append(guide)
 
     def check_valid_position(self, position):
         if position.x <= 0 or position.x >= self.room.get_width() or position.y <= 0 or position.y >= self.room.get_length():
@@ -87,7 +88,7 @@ class Simulation:
                     entities_to_remove.append(entity)
         for entity in entities_to_remove:
             self.entities.remove(entity)
-            entity.exit()
+            self.got_out_entities.append(entity)
 
     def get_nearest_guide(self, entity):
         min_dis = self.room.get_maximum_distance()
