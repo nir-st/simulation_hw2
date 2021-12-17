@@ -1,4 +1,4 @@
-class Simulation():
+class Simulation:
     def __init__(self, room, entities, guides):
         self.room = room
         self.entities = entities
