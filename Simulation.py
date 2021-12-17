@@ -18,7 +18,7 @@ class Simulation():
         guides_to_remove = []
         for guide in self.guides:
             desired_location = guide.get_desired_location()
-            if (self.is_location_available(desired_location, guide)):
+            if self.is_location_available(desired_location, guide):
                 guide.set_position_at_k(desired_location)
                 if guide.is_at_door(self.room.get_doors_locations()):
                     print("the guide is out")
