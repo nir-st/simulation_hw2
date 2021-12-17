@@ -5,12 +5,11 @@ import Position
 
 
 class Guide(Entity):
-    def __init__(self, starting_position, velocity, knows_left_door,knows_right_door):
+    def __init__(self, starting_position, velocity, knows_left_door, knows_right_door):
         super().__init__(starting_position, velocity)
         self.knows_left_door = knows_left_door
         self.knows_right_door = knows_right_door
-        self.direction= null
-
+        self.direction = null
 
     def find_direction_to_door(self, room):
         curr_possition = self.get_position_at_k(0)
@@ -26,6 +25,8 @@ class Guide(Entity):
         else:
             self.direction = curr_possition.direction_to(door_positions[1])
 
+    def get_desired_location(self):
+        return self.direction
 
 # p = Position(1, 1)
 # g = Guide(p, 1, False)
