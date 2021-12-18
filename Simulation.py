@@ -1,5 +1,6 @@
-import math
+from Animation import yo
 import random
+import matplotlib.pyplot as plt
 
 
 class Simulation:
@@ -10,6 +11,8 @@ class Simulation:
         self.is_simulating = False
         self.current_time = 0  # k
         self.visible_distance = visible_distance
+        self.got_out_guides = []
+        self.got_out_entities = []
 
     def run_simulate(self):
         for guide in self.guides:
@@ -18,6 +21,8 @@ class Simulation:
             self.run_interval()
             self.current_time = self.current_time + 1
         print(f'finished in {self.current_time * 0.02} seconds')
+
+        yo (self.got_out_guides[0].positions, self.got_out_entities[0].positions)
 
     def run_interval(self):
         self.move_guides()
@@ -35,7 +40,7 @@ class Simulation:
         # add walls
         for entity in self.entities:
             if excluded_entity != entity:
-                if entity.get_position_at_k(self.current_time).is_inside_radius(location, 0.3):
+                if entity.get_position_at_k(self.current_time).is_inside_radius(location, 0.5):
                     return False
         for guide in self.guides:
             if excluded_entity != guide:
@@ -51,6 +56,8 @@ class Simulation:
                 guide.set_position_at_k(desired_location)
                 if guide.is_near_door(self.room.get_doors_locations(), 0.3):
                     guides_to_remove.append(guide)
+            else:
+                guide.stay_in_place()
         for guide in guides_to_remove:
             self.guides.remove(guide)
             self.got_out_guides.append(guide)
@@ -74,7 +81,11 @@ class Simulation:
             else:
                 nearest_guide = self.get_nearest_guide(entity)
                 if nearest_guide:
-                    desired_direction = entity.get_position_at_k(self.current_time).direction_to(nearest_guide.get_position_at_k(self.current_time))
+                    distance_to_nearest_guide = entity.get_position_at_k(self.current_time).distance_to(nearest_guide.get_position_at_k(self.current_time))
+                    if distance_to_nearest_guide < 1:
+                        desired_direction = entity.get_direction_to_door(self.room)
+                    else:
+                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(nearest_guide.get_position_at_k(self.current_time))
                 else:
                     nearest_entity = self.get_nearest_entity(entity)
                     if nearest_entity:
@@ -86,6 +97,8 @@ class Simulation:
                 entity.set_position_at_k(desired_location)
                 if entity.is_near_door(self.room.get_doors_locations(), 0.3):
                     entities_to_remove.append(entity)
+            else:
+                entity.stay_in_place()
         for entity in entities_to_remove:
             self.entities.remove(entity)
             self.got_out_entities.append(entity)
