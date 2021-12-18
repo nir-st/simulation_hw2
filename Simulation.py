@@ -6,6 +6,10 @@ from Position import Position
 
 
 class Simulation:
+
+    RADIUS_FROM_DOOR_TO_EXIT = 0.5
+    RADIUS_ENTITY_SPOT = 0.3
+
     def __init__(self, room, entities, guides, visible_distance=20):
         self.room = room
         self.entities = entities
@@ -55,14 +59,13 @@ class Simulation:
         return random_direction
 
     def is_location_available(self, location, excluded_entity=None):
-        # add walls
         for entity in self.entities:
             if excluded_entity != entity:
-                if entity.get_position_at_k(self.current_time).is_inside_radius(location, 0.5):
+                if entity.get_position_at_k(self.current_time).is_inside_radius(location, self.RADIUS_ENTITY_SPOT):
                     return False
         for guide in self.guides:
             if excluded_entity != guide:
-                if guide.get_position_at_k(self.current_time).is_inside_radius(location, 0.5):
+                if guide.get_position_at_k(self.current_time).is_inside_radius(location, self.RADIUS_ENTITY_SPOT):
                     return False
         return True
 
@@ -84,7 +87,7 @@ class Simulation:
             desired_location = guide.get_desired_location()
             if self.is_location_available(desired_location, guide):
                 guide.set_position_at_k(desired_location)
-                if guide.is_near_door(self.room.get_doors_locations(), 0.3):
+                if guide.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
                     guides_to_remove.append(guide)
             else:
                 guide.stay_in_place()
@@ -125,7 +128,7 @@ class Simulation:
             desired_location = entity.get_desired_location(desired_direction)
             if self.is_location_available(desired_location, entity):
                 entity.set_position_at_k(desired_location)
-                if entity.is_near_door(self.room.get_doors_locations(), 0.3):
+                if entity.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
                     entities_to_remove.append(entity)
             else:
                 entity.stay_in_place()
