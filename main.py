@@ -53,9 +53,9 @@ def q1b_c():
     plt.hist(simulations_end_times, bins=8)
     print(f'Maximum finish time {max_time_to_evacuate} seconds')
     print(f'Average time to evacuate was {sum(simulations_end_times) / 200} seconds')
-    # plt.show()
+    plt.show()
 
-    # --------------------------------Q1c------------------------------------ #
+    # ---------Q1c---------- #
 
     collusion_count = 0
     for i in range(0, max_guide_steps):
