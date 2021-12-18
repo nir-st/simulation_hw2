@@ -5,12 +5,13 @@ import matplotlib.pyplot as plt
 from Entity import Entity
 from Guide import Guide
 from Position import Position
+import Animation
 
 
 class Simulation:
 
-    RADIUS_FROM_DOOR_TO_EXIT = 0.8
-    RADIUS_ENTITY_SPOT = 0.4
+    RADIUS_FROM_DOOR_TO_EXIT = 0.7
+    RADIUS_ENTITY_SPOT = 0.3
     MAX_TIME_TO_EVACUATE = 5000
 
     def __init__(self, room, entities, guides, visible_distance=20):
@@ -172,7 +173,12 @@ class Simulation:
                 if entity.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
                     entities_to_remove.append(entity)
             else:
-                entity.stay_in_place()
+                if not self.is_closest_to_door(entity.get_position_at_k(self.current_time)):
+                    previous_position = entity.get_previous_position()
+                    if self.is_location_available(previous_position):
+                        entity.set_position_at_k(previous_position)
+                else:
+                    entity.stay_in_place()
         for entity in entities_to_remove:
             self.entities.remove(entity)
             self.got_out_entities.append(entity)
@@ -205,3 +211,7 @@ class Simulation:
         if min_dis <= self.visible_distance:
             return nearest_entity
         return None
+
+    def animate(self):
+        Animation.animate([g.positions for g in self.guides] + [g.positions for g in self.got_out_guides])
+

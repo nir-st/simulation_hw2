@@ -1,11 +1,9 @@
-import Drawer
 from Room import Room
 from Simulation import Simulation
 from Guide import Guide
 from Entity import Entity
 from Position import Position
 import random
-import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -29,7 +27,7 @@ def q1b():
     room = Room(20, 20, [Position(20, 10)])
     simulations_end_times =[]
     max_time_to_evacuate = 0
-    for i in range(200):
+    for i in range(100):
         guides_x_position = random.randint(0, 20)
         guides_y_position = random.randint(0, 20)
         guide = Guide(Position(guides_x_position, guides_y_position), 1.5, True)
@@ -60,7 +58,7 @@ def q1b():
 #                                     Q2a                                    #
 # -------------------------------------------------------------------------- #
 def q2a():
-    num_of_guides = [20, 50, 100]
+    num_of_guides = [20, 50, 100, 200]
     room = Room(20, 20, [Position(20, 10)])
     for N in num_of_guides:
         simulation = Simulation(room, [], [])
@@ -68,7 +66,7 @@ def q2a():
         simulation.run_simulate()
         print(f'\nInitial number of guides: {N}')
         simulation.print_stats()
-        # Drawer.draw_shit([g.positions for g in simulation.guides] + [g.positions for g in simulation.got_out_guides], [])
+        # simulation.animate()
 
 
 if __name__ == '__main__':
