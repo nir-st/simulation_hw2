@@ -7,8 +7,9 @@ from Position import Position
 
 class Simulation:
 
-    RADIUS_FROM_DOOR_TO_EXIT = 0.5
-    RADIUS_ENTITY_SPOT = 0.3
+    RADIUS_FROM_DOOR_TO_EXIT = 1
+    RADIUS_ENTITY_SPOT = 0.2
+    MAX_TIME_TO_EVACUATE = 50000
 
     def __init__(self, room, entities, guides, visible_distance=20):
         self.room = room
@@ -41,7 +42,7 @@ class Simulation:
     def run_simulate(self):
         for guide in self.guides:
             guide.find_direction_to_door(self.room)
-        while self.current_time < 5000 and (self.guides or self.entities):
+        while self.current_time < self.MAX_TIME_TO_EVACUATE and (self.guides or self.entities):
             self.run_interval()
             self.current_time = self.current_time + 1
         self.end_time = self.current_time * 0.02
@@ -90,7 +91,11 @@ class Simulation:
                 if guide.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
                     guides_to_remove.append(guide)
             else:
-                guide.stay_in_place()
+                previous_position = guide.get_previous_position()
+                if self.is_location_available(previous_position):
+                    guide.set_position_at_k(previous_position)
+                else:
+                    guide.stay_in_place()
         for guide in guides_to_remove:
             self.guides.remove(guide)
             self.got_out_guides.append(guide)
