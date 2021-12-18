@@ -12,6 +12,9 @@ class Entity:
         distance = self.velocity * 0.02
         return current_position.calc_new_position(desired_direction, distance)
 
+    def get_previous_position(self):
+        return self.positions[len(self.positions) - 2]
+
     def get_position_at_k(self, k):
         return self.positions[k]
 
