@@ -9,9 +9,9 @@ from Position import Position
 
 class Simulation:
 
-    RADIUS_FROM_DOOR_TO_EXIT = 1
-    RADIUS_ENTITY_SPOT = 0.2
-    MAX_TIME_TO_EVACUATE = 50000
+    RADIUS_FROM_DOOR_TO_EXIT = 0.8
+    RADIUS_ENTITY_SPOT = 0.4
+    MAX_TIME_TO_EVACUATE = 5000
 
     def __init__(self, room, entities, guides, visible_distance=20):
         self.room = room
@@ -78,15 +78,23 @@ class Simulation:
             desired_position = entity.get_desired_location(random_direction)
         return random_direction
 
-    def is_location_available(self, location, excluded_entity=None):
+    def is_location_available(self, location, excluded_entity=None, entitys_direction=None):
         for entity in self.entities:
             if excluded_entity != entity:
                 if entity.get_position_at_k(self.current_time).is_inside_radius(location, self.RADIUS_ENTITY_SPOT):
-                    return False
+                    if excluded_entity:
+                        angel_to = location.direction_to(excluded_entity.get_position_at_k(self.current_time))
+                        angel_diff = abs((entitys_direction - angel_to + 180) % 360 - 180)
+                        if entitys_direction and angel_diff > 45:
+                            return False
         for guide in self.guides:
             if excluded_entity != guide:
                 if guide.get_position_at_k(self.current_time).is_inside_radius(location, self.RADIUS_ENTITY_SPOT):
-                    return False
+                    if excluded_entity:
+                        angel_to = location.direction_to(excluded_entity.get_position_at_k(self.current_time))
+                        angel_diff = abs((entitys_direction - angel_to + 180) % 360 - 180)
+                        if entitys_direction and angel_diff > 45:
+                            return False
         return True
 
     def print_stats(self):
@@ -105,19 +113,28 @@ class Simulation:
         guides_to_remove = []
         for guide in self.guides:
             desired_location = guide.get_desired_location()
-            if self.is_location_available(desired_location, guide):
+            if self.is_location_available(desired_location, guide, guide.direction_to_door):
                 guide.set_position_at_k(desired_location)
                 if guide.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
                     guides_to_remove.append(guide)
             else:
-                previous_position = guide.get_previous_position()
-                if self.is_location_available(previous_position):
-                    guide.set_position_at_k(previous_position)
+                if not self.is_closest_to_door(guide.get_position_at_k(self.current_time)):
+                    previous_position = guide.get_previous_position()
+                    if self.is_location_available(previous_position):
+                        guide.set_position_at_k(previous_position)
                 else:
                     guide.stay_in_place()
         for guide in guides_to_remove:
             self.guides.remove(guide)
             self.got_out_guides.append(guide)
+
+    def is_closest_to_door(self, pos):
+        dis_to_door = self.room.distance_to_nearest_door(pos)
+        for guide in self.guides:
+            other_dis_to_door = self.room.distance_to_nearest_door(guide.get_position_at_k(self.current_time))
+            if other_dis_to_door < dis_to_door:
+                return False
+        return True
 
     def check_valid_position(self, position):
         if position.x <= 0 or position.x >= self.room.get_width() or position.y <= 0 or position.y >= self.room.get_length():
@@ -150,7 +167,7 @@ class Simulation:
                     else:
                         desired_direction = self.move_entity_randomly(entity)
             desired_location = entity.get_desired_location(desired_direction)
-            if self.is_location_available(desired_location, entity):
+            if self.is_location_available(desired_location, entity, desired_direction):
                 entity.set_position_at_k(desired_location)
                 if entity.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
                     entities_to_remove.append(entity)
