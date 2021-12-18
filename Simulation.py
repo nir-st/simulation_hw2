@@ -213,5 +213,6 @@ class Simulation:
         return None
 
     def animate(self):
-        Animation.animate([g.positions for g in self.guides] + [g.positions for g in self.got_out_guides])
-
+        all_guides_positions = [g.positions for g in self.guides] + [g.positions for g in self.got_out_guides]
+        all_entities_positions = [e.positions for e in self.entities] + [e.positions for e in self.got_out_entities]
+        Animation.animate(all_guides_positions, all_entities_positions)
