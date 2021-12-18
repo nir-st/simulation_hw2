@@ -6,10 +6,11 @@ from Entity import Entity
 from Guide import Guide
 from Position import Position
 import Animation
+import Drawer
 
 
 class Simulation:
-    RADIUS_FROM_DOOR_TO_EXIT = 0.6
+    RADIUS_FROM_DOOR_TO_EXIT = 0.5
     RADIUS_ENTITY_SPOT = 0.3
     MAX_TIME_TO_EVACUATE = 5000
 
@@ -85,19 +86,23 @@ class Simulation:
         for entity in self.entities:
             if excluded_entity != entity:
                 if entity.get_position_at_k(self.current_time).is_inside_radius(location, self.RADIUS_ENTITY_SPOT):
-                    if excluded_entity:
-                        angel_to = location.direction_to(excluded_entity.get_position_at_k(self.current_time))
-                        angel_diff = abs((entitys_direction - angel_to + 180) % 360 - 180)
-                        if entitys_direction and angel_diff > 45:
+                    if excluded_entity and entitys_direction:
+                        angel_to_other_entity = excluded_entity.get_position_at_k(self.current_time).direction_to(entity.get_position_at_k(self.current_time))
+                        angel_diff = abs((entitys_direction - angel_to_other_entity + 180) % 360 - 180)
+                        if angel_diff < 135:
                             return False
+                    else:
+                        return False
         for guide in self.guides:
             if excluded_entity != guide:
                 if guide.get_position_at_k(self.current_time).is_inside_radius(location, self.RADIUS_ENTITY_SPOT):
-                    if excluded_entity:
-                        angel_to = location.direction_to(excluded_entity.get_position_at_k(self.current_time))
-                        angel_diff = abs((entitys_direction - angel_to + 180) % 360 - 180)
-                        if entitys_direction and angel_diff > 45:
+                    if excluded_entity and entitys_direction:
+                        angel_to_other_guide = excluded_entity.get_position_at_k(self.current_time).direction_to(guide.get_position_at_k(self.current_time))
+                        angel_diff = abs((entitys_direction - angel_to_other_guide + 180) % 360 - 180)
+                        if angel_diff < 135:
                             return False
+                    else:
+                        return False
         return True
 
     def print_stats(self):
@@ -224,6 +229,10 @@ class Simulation:
         if min_dis <= self.visible_distance:
             return nearest_entity
         return None
+
+    def draw_routes(self):
+        Drawer.draw_routes([g.positions for g in self.guides] + [g.positions for g in self.got_out_guides],
+                         [])
 
     def animate(self):
         all_guides_positions = [g.positions for g in self.guides] + [g.positions for g in self.got_out_guides]
