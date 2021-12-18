@@ -1,6 +1,8 @@
 # from Animation import yo
 import random
 import matplotlib.pyplot as plt
+
+from Entity import Entity
 from Guide import Guide
 from Position import Position
 
@@ -38,6 +40,23 @@ class Simulation:
                 pos.set_vals(X, Y)
             guide = Guide(pos, velocity, is_knows_left_door)
             self.guides.append(guide)
+
+    def add_entities_randomly(self, N, velocity):
+        # N = number of entities to add
+        for i in range(N):
+            X = random.randint(0, 20)
+            Y = random.randint(0, 20)
+            pos = Position(X, Y)
+            attempts = 0
+            while not self.is_location_available(pos):
+                attempts += 1
+                if attempts > 500:
+                    raise EnvironmentError("Can't find spots for more entities in the room")
+                X = random.randint(0, 20)
+                Y = random.randint(0, 20)
+                pos.set_vals(X, Y)
+            entity = Entity(pos, velocity)
+            self.entities.append(entity)
 
     def run_simulate(self):
         for guide in self.guides:
