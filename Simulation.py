@@ -9,7 +9,7 @@ import Animation
 
 
 class Simulation:
-    RADIUS_FROM_DOOR_TO_EXIT = 0.8
+    RADIUS_FROM_DOOR_TO_EXIT = 0.6
     RADIUS_ENTITY_SPOT = 0.3
     MAX_TIME_TO_EVACUATE = 5000
 

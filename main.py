@@ -90,8 +90,31 @@ def q2b():
     plt.show()
 
 
+# -------------------------------------------------------------------------- #
+#                                     Q2c                                    #
+# -------------------------------------------------------------------------- #
+def q2c():
+    num_of_guides = [10, 50, 100, 200, 250, 300]
+    room = Room(20, 20, [Position(20, 10)])
+    end_times = []
+
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        simulation.add_guides_randomly(round((N/3) * 2), 1.5, False)
+        simulation.add_guides_randomly(round(N/3), 0.5, False)
+        simulation.run_simulate()
+        # simulation.print_stats()
+        # simulation.animate()
+        print(f'finished simulation of of {N} guides. Evacuation time: {simulation.end_time}')
+        end_times.append(simulation.end_time)
+
+    plt.plot(num_of_guides, end_times)
+    plt.show()
+
+
 if __name__ == '__main__':
     # q1a()
     # q1b()
     # q2a()
-    q2b()
+    # q2b()
+    q2c()
