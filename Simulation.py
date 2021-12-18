@@ -10,7 +10,7 @@ import Animation
 
 class Simulation:
 
-    RADIUS_FROM_DOOR_TO_EXIT = 0.7
+    RADIUS_FROM_DOOR_TO_EXIT = 0.8
     RADIUS_ENTITY_SPOT = 0.3
     MAX_TIME_TO_EVACUATE = 5000
 
@@ -28,16 +28,16 @@ class Simulation:
     def add_guides_randomly(self, N, velocity, is_knows_left_door):
         # N = number of guides to add
         for i in range(N):
-            X = random.randint(0, 20)
-            Y = random.randint(0, 20)
+            X = random.randint(1, 19)
+            Y = random.randint(1, 19)
             pos = Position(X, Y)
             attempts = 0
             while not self.is_location_available(pos):
                 attempts += 1
                 if attempts > 500:
                     raise EnvironmentError("Can't find spots for more guides in the room")
-                X = random.randint(0, 20)
-                Y = random.randint(0, 20)
+                X = random.randint(1, 19)
+                Y = random.randint(1, 19)
                 pos.set_vals(X, Y)
             guide = Guide(pos, velocity, is_knows_left_door)
             self.guides.append(guide)
@@ -45,16 +45,16 @@ class Simulation:
     def add_entities_randomly(self, N, velocity):
         # N = number of entities to add
         for i in range(N):
-            X = random.randint(0, 20)
-            Y = random.randint(0, 20)
+            X = random.randint(1, 19)
+            Y = random.randint(1, 19)
             pos = Position(X, Y)
             attempts = 0
             while not self.is_location_available(pos):
                 attempts += 1
                 if attempts > 500:
                     raise EnvironmentError("Can't find spots for more entities in the room")
-                X = random.randint(0, 20)
-                Y = random.randint(0, 20)
+                X = random.randint(1, 19)
+                Y = random.randint(1, 19)
                 pos.set_vals(X, Y)
             entity = Entity(pos, velocity)
             self.entities.append(entity)
