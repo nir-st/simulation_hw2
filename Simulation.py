@@ -1,6 +1,8 @@
 # from Animation import yo
 import random
 import matplotlib.pyplot as plt
+from Guide import Guide
+from Position import Position
 
 
 class Simulation:
@@ -14,6 +16,23 @@ class Simulation:
         self.got_out_guides = []
         self.got_out_entities = []
         self.end_time = 0
+
+    def add_guides_randomly(self, N, velocity, is_knows_left_door):
+        # N = number of guides to add
+        for i in range(N):
+            X = random.randint(0, 20)
+            Y = random.randint(0, 20)
+            pos = Position(X, Y)
+            attempts = 0
+            while not self.is_location_available(pos):
+                attempts += 1
+                if attempts > 500:
+                    raise EnvironmentError("Can't find spots for more guides in the room")
+                X = random.randint(0, 20)
+                Y = random.randint(0, 20)
+                pos.set_vals(X, Y)
+            guide = Guide(pos, velocity, is_knows_left_door)
+            self.guides.append(guide)
 
     def run_simulate(self):
         for guide in self.guides:
@@ -35,7 +54,7 @@ class Simulation:
             desired_position = entity.get_desired_location(random_direction)
         return random_direction
 
-    def is_location_available(self, location, excluded_entity):
+    def is_location_available(self, location, excluded_entity=None):
         # add walls
         for entity in self.entities:
             if excluded_entity != entity:
@@ -46,6 +65,18 @@ class Simulation:
                 if guide.get_position_at_k(self.current_time).is_inside_radius(location, 0.5):
                     return False
         return True
+
+    def print_stats(self):
+        if self.is_room_empty():
+            print(f'room was evacuated in {self.end_time} seconds')
+        else:
+            print(f'Number of guides left in the room: {len(self.guides)}')
+            print(f'Number of entities left in the room: {len(self.entities)}')
+        print(f'Number of guides got out of the room: {len(self.got_out_guides)}')
+        print(f'Number of entities got out of the room: {len(self.got_out_entities)}')
+
+    def is_room_empty(self):
+        return len(self.guides) == 0 and len(self.entities) == 0
 
     def move_guides(self):
         guides_to_remove = []
