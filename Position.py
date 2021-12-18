@@ -23,6 +23,10 @@ class Position:
     def is_inside_radius(self, other_position, radius):
         return (math.pow((self.x - other_position.x), 2)) + (math.pow((self.y - other_position.y), 2)) < math.pow(radius, 2)
 
+    def set_vals(self, new_x, new_y):
+        self.x = new_x
+        self.y = new_y
+
     def __repr__(self):
         return "(" + str(self.x) + ", " + str(self.y) + ")"
 
