@@ -23,7 +23,7 @@ def draw_shit(guides_posistions, entitys_positions):
             entity_ys.append(pos.y)
         ax1.scatter(entity_xs, entity_ys, c="r", marker=".", label='regular')
 
-    plt.legend(loc='best')
+    # plt.legend(loc='best')
     plt.xlim([0, 20])
     plt.ylim([0, 20])
     plt.show()
