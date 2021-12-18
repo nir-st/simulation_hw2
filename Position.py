@@ -16,7 +16,9 @@ class Position:
         return math.atan2(deltaY, deltaX) * 180 / math.pi
 
     def calc_new_position(self, direction, distance):
+
         new_x = self.x + distance * math.cos(direction * math.pi / 180)
+
         new_y = self.y + distance * math.sin(direction * math.pi / 180)
         return Position(new_x, new_y)
 

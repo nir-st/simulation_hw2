@@ -9,8 +9,8 @@ from Position import Position
 
 class Simulation:
 
-    RADIUS_FROM_DOOR_TO_EXIT = 1
-    RADIUS_ENTITY_SPOT = 0.2
+    RADIUS_FROM_DOOR_TO_EXIT = 0.6
+    RADIUS_ENTITY_SPOT = 0.15
     MAX_TIME_TO_EVACUATE = 50000
 
     def __init__(self, room, entities, guides, visible_distance=20):
@@ -111,10 +111,12 @@ class Simulation:
                     guides_to_remove.append(guide)
             else:
                 previous_position = guide.get_previous_position()
+
                 if self.is_location_available(previous_position):
-                    guide.set_position_at_k(previous_position)
+                   guide.set_position_at_k(previous_position)
                 else:
-                    guide.stay_in_place()
+
+                   guide.stay_in_place()
         for guide in guides_to_remove:
             self.guides.remove(guide)
             self.got_out_guides.append(guide)
