@@ -1,4 +1,4 @@
-from Animation import yo
+# from Animation import yo
 import random
 import matplotlib.pyplot as plt
 
@@ -13,6 +13,7 @@ class Simulation:
         self.visible_distance = visible_distance
         self.got_out_guides = []
         self.got_out_entities = []
+        self.end_time = 0
 
     def run_simulate(self):
         for guide in self.guides:
@@ -20,9 +21,10 @@ class Simulation:
         while self.current_time < 5000 and (self.guides or self.entities):
             self.run_interval()
             self.current_time = self.current_time + 1
+        self.end_time = self.current_time * 0.02
         print(f'finished in {self.current_time * 0.02} seconds')
 
-        yo (self.got_out_guides[0].positions, self.got_out_entities[0].positions)
+        # yo (self.got_out_guides[0].positions, self.got_out_entities[0].positions)
 
     def run_interval(self):
         self.move_guides()
