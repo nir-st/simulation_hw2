@@ -14,13 +14,13 @@ from itertools import combinations
 # -------------------------------------------------------------------------- #
 def q1a():
     room = Room(20, 20, [Position(20, 10)])
-    guide = Guide(Position(5, 10), 1.5, True)
+    guide = Guide(Position(10, 10), 1.5, False)
     entities = []
     guides = [guide]
     simulation = Simulation(room, entities, guides)
     simulation.run_simulate()
     simulation.print_stats()
-    Drawer.draw_shit([g.positions for g in simulation.guides] + [g.positions for g in simulation.got_out_guides], [])
+    simulation.draw_routes()
 
 
 # -------------------------------------------------------------------------- #
@@ -71,13 +71,12 @@ def q1b_c():
     print(collusion_count)
 
 
-
-
 # -------------------------------------------------------------------------- #
 #                                     Q2a                                    #
 # -------------------------------------------------------------------------- #
 def q2a():
     num_of_guides = [20, 50, 100, 200]
+    # num_of_guides = [100]
     room = Room(20, 20, [Position(20, 10)])
     for N in num_of_guides:
         simulation = Simulation(room, [], [])
@@ -92,7 +91,7 @@ def q2a():
 #                                     Q2b                                    #
 # -------------------------------------------------------------------------- #
 def q2b():
-    num_of_guides = [25, 50, 75, 100, 125, 150, 175, 200]
+    num_of_guides = [10, 50, 100, 200, 300]
     room = Room(20, 20, [Position(20, 10)])
     end_times = []
 
@@ -105,6 +104,9 @@ def q2b():
         end_times.append(simulation.end_time)
 
     plt.plot(num_of_guides, end_times)
+    plt.title('Time to evacuate based on the number of guides')
+    plt.ylabel('time to evacuate in seconds')
+    plt.xlabel('number of guides in the room')
     plt.show()
 
 
@@ -112,7 +114,7 @@ def q2b():
 #                                     Q2c                                    #
 # -------------------------------------------------------------------------- #
 def q2c():
-    num_of_guides = [10, 50, 100, 200, 250, 300]
+    num_of_guides = [10, 50, 100, 150, 200, 250, 300]
     room = Room(20, 20, [Position(20, 10)])
     end_times = []
 
@@ -125,12 +127,15 @@ def q2c():
         end_times.append(simulation.end_time)
 
     plt.plot(num_of_guides, end_times)
+    plt.title('Time to evacuate based on the number of guides (with 30% slower entities)')
+    plt.ylabel('time to evacuate in seconds')
+    plt.xlabel('number of guides in the room')
+    plt.plot(num_of_guides, end_times)
     plt.show()
 
 
 if __name__ == '__main__':
     # q1a()
-    # q1b()
     # q1b_c()
     # q2a()
     # q2b()
