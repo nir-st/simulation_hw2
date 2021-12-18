@@ -22,9 +22,6 @@ class Simulation:
             self.run_interval()
             self.current_time = self.current_time + 1
         self.end_time = self.current_time * 0.02
-        print(f'finished in {self.end_time} seconds')
-
-        # yo (self.got_out_guides[0].positions, self.got_out_entities[0].positions)
 
     def run_interval(self):
         self.move_guides()
