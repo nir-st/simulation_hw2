@@ -58,8 +58,7 @@ def q1b():
 #                                     Q2a                                    #
 # -------------------------------------------------------------------------- #
 def q2a():
-    num_of_guides = [150]
-    # num_of_guides = [20, 50, 100, 200]
+    num_of_guides = [20, 50, 100, 200]
     room = Room(20, 20, [Position(20, 10)])
     for N in num_of_guides:
         simulation = Simulation(room, [], [])
@@ -94,5 +93,5 @@ def q2b():
 if __name__ == '__main__':
     # q1a()
     # q1b()
-    q2a()
-    # q2b()
+    # q2a()
+    q2b()
