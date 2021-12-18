@@ -85,7 +85,7 @@ def q2a():
         simulation.run_simulate()
         print(f'\nInitial number of guides: {N}')
         simulation.print_stats()
-        simulation.animate()
+        # simulation.animate()
 
 
 # -------------------------------------------------------------------------- #
@@ -100,8 +100,6 @@ def q2b():
         simulation = Simulation(room, [], [])
         simulation.add_guides_randomly(N, 1.5, False)
         simulation.run_simulate()
-        # simulation.print_stats()
-        Drawer.draw_shit([g.positions for g in simulation.guides] + [g.positions for g in simulation.got_out_guides], [])
         # simulation.animate()
         print(f'finished simulation of of {N} guides. Evacuation time: {simulation.end_time}')
         end_times.append(simulation.end_time)
@@ -123,8 +121,6 @@ def q2c():
         simulation.add_guides_randomly(round((N/3) * 2), 1.5, False)
         simulation.add_guides_randomly(round(N/3), 0.5, False)
         simulation.run_simulate()
-        # simulation.print_stats()
-        # simulation.animate()
         print(f'finished simulation of of {N} guides. Evacuation time: {simulation.end_time}')
         end_times.append(simulation.end_time)
 
@@ -135,8 +131,7 @@ def q2c():
 if __name__ == '__main__':
     # q1a()
     # q1b()
-    q1b_c()
-
+    # q1b_c()
     # q2a()
     # q2b()
     q2c()
