@@ -22,7 +22,7 @@ class Simulation:
             self.run_interval()
             self.current_time = self.current_time + 1
         self.end_time = self.current_time * 0.02
-        print(f'finished in {self.current_time * 0.02} seconds')
+        print(f'finished in {self.end_time} seconds')
 
         # yo (self.got_out_guides[0].positions, self.got_out_entities[0].positions)
 
@@ -126,7 +126,7 @@ class Simulation:
             if entity != excluded_entity:
                 excluded_entitys_pos = excluded_entity.get_position_at_k(self.current_time)
                 entitys_pos = entity.get_position_at_k(self.current_time)
-                distance = excluded_entitys_pos.distance_to(entity_pos)
+                distance = excluded_entitys_pos.distance_to(entitys_pos)
                 if distance < min_dis:
                     min_dis = distance
                     nearest_entity = entity
