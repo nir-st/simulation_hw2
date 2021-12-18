@@ -9,8 +9,7 @@ import Animation
 
 
 class Simulation:
-
-    RADIUS_FROM_DOOR_TO_EXIT = 0.7
+    RADIUS_FROM_DOOR_TO_EXIT = 0.6
     RADIUS_ENTITY_SPOT = 0.3
     MAX_TIME_TO_EVACUATE = 5000
 
@@ -24,20 +23,21 @@ class Simulation:
         self.got_out_guides = []
         self.got_out_entities = []
         self.end_time = 0
+        self.running = False
 
     def add_guides_randomly(self, N, velocity, is_knows_left_door):
         # N = number of guides to add
         for i in range(N):
-            X = random.randint(0, 20)
-            Y = random.randint(0, 20)
+            X = random.uniform(1, 19)
+            Y = random.uniform(1, 19)
             pos = Position(X, Y)
             attempts = 0
             while not self.is_location_available(pos):
                 attempts += 1
                 if attempts > 500:
                     raise EnvironmentError("Can't find spots for more guides in the room")
-                X = random.randint(0, 20)
-                Y = random.randint(0, 20)
+                X = random.randint(1, 19)
+                Y = random.randint(1, 19)
                 pos.set_vals(X, Y)
             guide = Guide(pos, velocity, is_knows_left_door)
             self.guides.append(guide)
@@ -45,27 +45,29 @@ class Simulation:
     def add_entities_randomly(self, N, velocity):
         # N = number of entities to add
         for i in range(N):
-            X = random.randint(0, 20)
-            Y = random.randint(0, 20)
+            X = random.uniform(1, 19)
+            Y = random.uniform(1, 19)
             pos = Position(X, Y)
             attempts = 0
             while not self.is_location_available(pos):
                 attempts += 1
                 if attempts > 500:
                     raise EnvironmentError("Can't find spots for more entities in the room")
-                X = random.randint(0, 20)
-                Y = random.randint(0, 20)
+                X = random.randint(1, 19)
+                Y = random.randint(1, 19)
                 pos.set_vals(X, Y)
             entity = Entity(pos, velocity)
             self.entities.append(entity)
 
     def run_simulate(self):
+        self.running = True
         for guide in self.guides:
             guide.find_direction_to_door(self.room)
         while self.current_time < self.MAX_TIME_TO_EVACUATE and (self.guides or self.entities):
             self.run_interval()
             self.current_time = self.current_time + 1
         self.end_time = self.current_time * 0.02
+        self.running = False
 
     def run_interval(self):
         self.move_guides()
@@ -99,6 +101,8 @@ class Simulation:
         return True
 
     def print_stats(self):
+        if self.running:
+            raise EnvironmentError('Simulation is still running')
         if self.is_room_empty():
             print(f'room was evacuated in {self.end_time} seconds')
         else:
@@ -116,15 +120,21 @@ class Simulation:
             desired_location = guide.get_desired_location()
             if self.is_location_available(desired_location, guide, guide.direction_to_door):
                 guide.set_position_at_k(desired_location)
-                if guide.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
-                    guides_to_remove.append(guide)
             else:
                 if not self.is_closest_to_door(guide.get_position_at_k(self.current_time)):
                     previous_position = guide.get_previous_position()
-                    if self.is_location_available(previous_position):
+                    if guide.direction_to_door >= 180:
+                        opposite_direction = guide.direction_to_door - 180
+                    else:
+                        opposite_direction = guide.direction_to_door + 180
+                    if self.is_location_available(previous_position, guide, opposite_direction):
                         guide.set_position_at_k(previous_position)
+                    else:
+                        guide.set_position_at_k(desired_location)
                 else:
-                    guide.stay_in_place()
+                    guide.set_position_at_k(desired_location)
+            if guide.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
+                guides_to_remove.append(guide)
         for guide in guides_to_remove:
             self.guides.remove(guide)
             self.got_out_guides.append(guide)
@@ -156,15 +166,18 @@ class Simulation:
             else:
                 nearest_guide = self.get_nearest_guide(entity)
                 if nearest_guide:
-                    distance_to_nearest_guide = entity.get_position_at_k(self.current_time).distance_to(nearest_guide.get_position_at_k(self.current_time))
+                    distance_to_nearest_guide = entity.get_position_at_k(self.current_time).distance_to(
+                        nearest_guide.get_position_at_k(self.current_time))
                     if distance_to_nearest_guide < 1:
                         desired_direction = entity.get_direction_to_door(self.room)
                     else:
-                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(nearest_guide.get_position_at_k(self.current_time))
+                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(
+                            nearest_guide.get_position_at_k(self.current_time))
                 else:
                     nearest_entity = self.get_nearest_entity(entity)
                     if nearest_entity:
-                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(nearest_entity.get_position_at_k(self.current_time))
+                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(
+                            nearest_entity.get_position_at_k(self.current_time))
                     else:
                         desired_direction = self.move_entity_randomly(entity)
             desired_location = entity.get_desired_location(desired_direction)
@@ -175,7 +188,7 @@ class Simulation:
             else:
                 if not self.is_closest_to_door(entity.get_position_at_k(self.current_time)):
                     previous_position = entity.get_previous_position()
-                    if self.is_location_available(previous_position):
+                    if self.is_location_available(previous_position, entity):
                         entity.set_position_at_k(previous_position)
                 else:
                     entity.stay_in_place()

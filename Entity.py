@@ -6,7 +6,7 @@ class Entity:
         self.velocity = velocity
         self.positions = []  # array of positions
         self.positions.append(starting_position)
-        self.previous_position = None
+        self.previous_position = starting_position
 
     def get_desired_location(self, desired_direction):
         current_position = self.positions[len(self.positions) - 1]
@@ -20,7 +20,8 @@ class Entity:
         return self.positions[k]
 
     def set_position_at_k(self, position):
-        self.previous_position = self.positions[len(self.positions) - 2]
+        if len(self.positions) > 1:
+            self.previous_position = self.positions[len(self.positions) - 2]
         self.positions.append(position)
 
     def stay_in_place(self):
