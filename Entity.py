@@ -18,6 +18,9 @@ class Entity:
     def set_position_at_k(self, position):
         self.positions.append(position)
 
+    def stay_in_place(self):
+        self.positions.append(self.positions[len(self.positions) - 1])
+
     def get_direction_to_door(self, room):
         curr_position = self.positions[len(self.positions) - 1]
         door_positions = room.get_doors_locations()
