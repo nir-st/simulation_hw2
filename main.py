@@ -60,17 +60,18 @@ def q1b():
 #                                     Q2a                                    #
 # -------------------------------------------------------------------------- #
 def q2a():
-    num_of_guides = [20, 50, 100, 200]
+    num_of_guides = [20, 50, 100]
     room = Room(20, 20, [Position(20, 10)])
-    simulation = Simulation(room, [], [])
-    simulation.add_guides_randomly(20, 1.5, False)
-    simulation.run_simulate()
-    simulation.print_stats()
-    Drawer.draw_shit([g.positions for g in simulation.guides] + [g.positions for g in simulation.got_out_guides], [])
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        simulation.add_guides_randomly(N, 1.5, False)
+        simulation.run_simulate()
+        print(f'\nInitial number of guides: {N}')
+        simulation.print_stats()
+        # Drawer.draw_shit([g.positions for g in simulation.guides] + [g.positions for g in simulation.got_out_guides], [])
 
 
 if __name__ == '__main__':
     # q1a()
     # q1b()
     q2a()
-    
