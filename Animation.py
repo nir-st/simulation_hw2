@@ -3,7 +3,7 @@ import matplotlib.animation
 import numpy as np
 
 
-def yo(guides_positions):
+def animate(guides_positions):
     number_of_frames = 0
 
     gps = []
