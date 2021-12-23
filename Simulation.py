@@ -166,35 +166,42 @@ class Simulation:
         # else: random direction
         entities_to_remove = []
         for entity in self.entities:
-            if entity.is_near_door(self.room.get_doors_locations(), self.visible_distance):
+            if self.is_closest_to_door(entity.get_position_at_k(self.current_time)):
                 desired_direction = entity.get_direction_to_door(self.room)
-            else:
-                nearest_guide = self.get_nearest_guide(entity)
-                if nearest_guide:
-                    distance_to_nearest_guide = entity.get_position_at_k(self.current_time).distance_to(
-                        nearest_guide.get_position_at_k(self.current_time))
-                    if distance_to_nearest_guide < 1:
-                        desired_direction = entity.get_direction_to_door(self.room)
-                    else:
-                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(
-                            nearest_guide.get_position_at_k(self.current_time))
-                else:
-                    nearest_entity = self.get_nearest_entity(entity)
-                    if nearest_entity:
-                        desired_direction = entity.get_position_at_k(self.current_time).direction_to(
-                            nearest_entity.get_position_at_k(self.current_time))
-                    else:
-                        desired_direction = self.move_entity_randomly(entity)
-            desired_location = entity.get_desired_location(desired_direction)
-            if self.is_location_available(desired_location, entity, desired_direction):
+                desired_location = entity.get_desired_location(desired_direction)
                 entity.set_position_at_k(desired_location)
-                if entity.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
-                    entities_to_remove.append(entity)
+            else:
+                if entity.is_near_door(self.room.get_doors_locations(), self.visible_distance):
+                    desired_direction = entity.get_direction_to_door(self.room)
+                else:
+                    nearest_guide = self.get_nearest_guide(entity)
+                    if nearest_guide:
+                        distance_to_nearest_guide = entity.get_position_at_k(self.current_time).distance_to(
+                            nearest_guide.get_position_at_k(self.current_time))
+                        if distance_to_nearest_guide < 1:
+                            desired_direction = entity.get_direction_to_door(self.room)
+                        else:
+                            desired_direction = entity.get_position_at_k(self.current_time).direction_to(
+                                nearest_guide.get_position_at_k(self.current_time))
+                    else:
+                        nearest_entity = self.get_nearest_entity(entity)
+                        if nearest_entity:
+                            desired_direction = entity.get_position_at_k(self.current_time).direction_to(
+                                nearest_entity.get_position_at_k(self.current_time))
+                        else:
+                            desired_direction = self.move_entity_randomly(entity)
+                desired_location = entity.get_desired_location(desired_direction)
+                if self.is_location_available(desired_location, entity, desired_direction):
+                    entity.set_position_at_k(desired_location)
+            if entity.is_near_door(self.room.get_doors_locations(), self.RADIUS_FROM_DOOR_TO_EXIT):
+                entities_to_remove.append(entity)
             else:
                 if not self.is_closest_to_door(entity.get_position_at_k(self.current_time)):
                     previous_position = entity.get_previous_position()
                     if self.is_location_available(previous_position, entity):
                         entity.set_position_at_k(previous_position)
+                    else:
+                        entity.stay_in_place()
                 else:
                     entity.stay_in_place()
         for entity in entities_to_remove:
