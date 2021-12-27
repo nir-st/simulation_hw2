@@ -75,16 +75,16 @@ def q1b_c():
 #                                     Q2a                                    #
 # -------------------------------------------------------------------------- #
 def q2a():
-    num_of_guides = [20, 50, 100, 200]
-    # num_of_guides = [100]
+    # num_of_guides = [20, 50, 100, 200]
+    num_of_guides = [50]
     room = Room(20, 20, [Position(20, 10)])
     for N in num_of_guides:
         simulation = Simulation(room, [], [])
-        simulation.add_guides_randomly(N, 1.5, False)
+        simulation.add_guides_randomly(N, 1.5, True)
         simulation.run_simulate()
         print(f'\nInitial number of guides: {N}')
         simulation.print_stats()
-        # simulation.animate()
+        simulation.animate()
 
 
 # -------------------------------------------------------------------------- #
@@ -134,9 +134,132 @@ def q2c():
     plt.show()
 
 
+# -------------------------------------------------------------------------- #
+#                                     Q5                                    #
+# -------------------------------------------------------------------------- #
+def q5_1door():
+    vision = 3
+    num_entities = 50
+    room = Room(20, 20, [Position(20, 10)])
+
+    num_of_iterations = 3
+    times = {
+        'case1': [],
+        'case2': [],
+        'case3': [],
+        'case4': []
+    }
+
+    # CASE 1: one guides at the center of the room
+    for i in range(num_of_iterations):
+        case1_guide1 = Guide(Position(10, 10), 1.5, False)
+
+        simulation = Simulation(room, [], [case1_guide1], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case1'].append(simulation.end_time)
+        # simulation.animate()
+        print(f'finished iteration {i} of case 1')
+
+    # CASE 2: one guide at the center of the wall opposite the door
+    for i in range(num_of_iterations):
+        case2_guide1 = Guide(Position(0.5, 10), 1.5, False)
+
+        simulation = Simulation(room, [], [case2_guide1], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case2'].append(simulation.end_time)
+        # simulation.animate()
+        print(f'finished iteration {i} of case 2')
+
+    # CASE 3: two guides standing each at the center of the top and bottom wall
+    for i in range(num_of_iterations):
+        case3_guide1 = Guide(Position(10, 19.5), 1.5, True)
+        case3_guide2 = Guide(Position(10, 0.5), 1.5, True)
+
+        simulation = Simulation(room, [], [case3_guide1, case3_guide2], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case3'].append(simulation.end_time)
+        # simulation.animate()
+        print(f'finished iteration {i} of case 3')
+
+    # CASE 4: two guides standing at the corners far from the door
+    for i in range(num_of_iterations):
+        case4_guide1 = Guide(Position(0.5, 19.5), 1.5, True)
+        case4_guide2 = Guide(Position(0.5, 0.5), 1.5, True)
+
+        simulation = Simulation(room, [], [case4_guide1, case4_guide2], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case4'].append(simulation.end_time)
+        # simulation.animate()
+        print(f'finished iteration {i} of case 4')
+
+    print('Evacuation time average:')
+    print(f'CASE I: {sum(times["case1"]) / num_of_iterations}')
+    print(f'CASE II: {sum(times["case2"]) / num_of_iterations}')
+    print(f'CASE III: {sum(times["case3"]) / num_of_iterations}')
+    print(f'CASE IV: {sum(times["case4"]) / num_of_iterations}')
+
+
+
+def q5_2doors():
+    vision = 5
+    num_entities = 75
+    room = Room(20, 20, [Position(20, 10), Position(0, 10)])
+
+    num_of_iterations = 5
+    times = {
+        'case1': [],
+        'case2': [],
+        'case3': []
+    }
+
+    # CASE 1: two guides at the center of the room, each going to a different door.
+    for i in range(num_of_iterations):
+        case1_guide1 = Guide(Position(9.5, 10), 1.5, True)
+        case1_guide2 = Guide(Position(10.5, 10), 1.5, True)
+
+        simulation = Simulation(room, [], [case1_guide1, case1_guide2], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case1'].append(simulation.end_time)
+        # simulation.animate()
+
+    # CASE 2: two guides standing near the walls at the center of the room, each going to a different door
+    for i in range(num_of_iterations):
+        case2_guide1 = Guide(Position(9.5, 0.5), 1.5, True)
+        case2_guide2 = Guide(Position(10.5, 0.5), 1.5, True)
+
+        simulation = Simulation(room, [], [case2_guide1, case2_guide2], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case2'].append(simulation.end_time)
+        # simulation.animate()
+
+    # CASE 3: two guides standing each on a different wall and going to a different door
+    for i in range(num_of_iterations):
+        case3_guide1 = Guide(Position(9.5, 19.5), 1.5, True)
+        case3_guide2 = Guide(Position(10.5, 0.5), 1.5, True)
+
+        simulation = Simulation(room, [], [case3_guide1, case3_guide2], vision)
+        simulation.add_entities_randomly(num_entities, 1.5)
+        simulation.run_simulate()
+        times['case3'].append(simulation.end_time)
+        # simulation.animate()
+
+    print('Evacuation time average:')
+    print(f'CASE I: {sum(times["case1"]) / num_of_iterations}')
+    print(f'CASE II: {sum(times["case2"]) / num_of_iterations}')
+    print(f'CASE III: {sum(times["case3"]) / num_of_iterations}')
+
+
 if __name__ == '__main__':
     # q1a()
     # q1b_c()
     # q2a()
     # q2b()
-    q2c()
+    # q2c()
+    # q5_1door()
+    # q5_2doors()
