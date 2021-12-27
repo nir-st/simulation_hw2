@@ -70,6 +70,9 @@ class Simulation:
         self.end_time = self.current_time * 0.02
         self.running = False
 
+    def stayed_in_room(self):
+        return len(self.guides)+len(self.entities)
+
     def run_interval(self):
         self.move_guides()
         self.move_entities()
@@ -89,7 +92,7 @@ class Simulation:
                     if excluded_entity and entitys_direction:
                         angel_to_other_entity = excluded_entity.get_position_at_k(self.current_time).direction_to(entity.get_position_at_k(self.current_time))
                         angel_diff = abs((entitys_direction - angel_to_other_entity + 180) % 360 - 180)
-                        if angel_diff < 135:
+                        if angel_diff < 25:
                             return False
                     else:
                         return False
@@ -99,7 +102,7 @@ class Simulation:
                     if excluded_entity and entitys_direction:
                         angel_to_other_guide = excluded_entity.get_position_at_k(self.current_time).direction_to(guide.get_position_at_k(self.current_time))
                         angel_diff = abs((entitys_direction - angel_to_other_guide + 180) % 360 - 180)
-                        if angel_diff < 135:
+                        if angel_diff < 20:
                             return False
                     else:
                         return False

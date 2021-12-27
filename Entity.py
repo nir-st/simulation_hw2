@@ -17,6 +17,8 @@ class Entity:
         return self.previous_position
 
     def get_position_at_k(self, k):
+        if k>= len(self.positions):
+            k=len(self.positions)-1
         return self.positions[k]
 
     def set_position_at_k(self, position):

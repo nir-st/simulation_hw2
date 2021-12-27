@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation
 import numpy as np
+import imageio
 
 
 def animate(guides_positions, entities_positions):
@@ -55,3 +56,5 @@ def animate(guides_positions, entities_positions):
     plt.ylim(0, 20)
     plt.title("Evacuation route")
     plt.show()
+    plt.savefig('1.png')
+

@@ -132,6 +132,139 @@ def q2c():
     plt.xlabel('number of guides in the room')
     plt.plot(num_of_guides, end_times)
     plt.show()
+# -------------------------------------------------------------------------- #
+#                                     Q3                                  #
+# -------------------------------------------------------------------------- #
+
+def q3a():
+    num_of_guides = [10, 50, 100, 150, 200, 250, 300]
+    room = Room(20, 20, [Position(0, 10),Position(20, 10)])
+    end_times = []
+
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        simulation.add_guides_randomly(round(N / 2), 1.5, True)
+        simulation.add_guides_randomly(round(N / 2), 1.5, False)
+        simulation.run_simulate()
+        print(f'finished simulation of of {N} guides. Evacuation time: {simulation.end_time}')
+        end_times.append(simulation.end_time)
+
+    plt.plot(num_of_guides, end_times)
+    plt.title('Time to evacuate based on the number of guides and two doors')
+    plt.ylabel('time to evacuate in seconds')
+    plt.xlabel('number of guides in the room')
+    plt.plot(num_of_guides, end_times)
+    plt.show()
+
+def q3b():
+    num_of_guides = [10, 50, 100, 150, 200, 250, 300]
+    room = Room(20, 20, [Position(0, 10),Position(20, 10)])
+    end_times = []
+
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        simulation.add_guides_randomly(N, 1.5, True)
+        simulation.run_simulate()
+        print(f'finished simulation of of {N} guides. Evacuation time: {simulation.end_time}')
+        end_times.append(simulation.end_time)
+
+    plt.plot(num_of_guides, end_times)
+    plt.title('Time to evacuate based on the half number of guides knows two doors')
+    plt.ylabel('time to evacuate in seconds')
+    plt.xlabel('number of guides in the room')
+    plt.plot(num_of_guides, end_times)
+    plt.show()
+
+
+
+# -------------------------------------------------------------------------- #
+#                                     Q4                                 #
+# -------------------------------------------------------------------------- #
+
+
+def q4a():
+    num_of_guides = [(1,50), (5,100), (10,200), (15,300)]
+    room = Room(20, 20, [Position(0, 10),Position(20, 10)])
+    end_times = []
+    num_of_g_e = []
+    survivors=[]
+
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        num_of_g_e.append(str(N))
+        simulation.add_guides_randomly( N[0], 0.75, True)
+        simulation.add_entities_randomly(N[1], 0.75)
+
+        simulation.run_simulate()
+        survivors.append(N[1]+N[0]-simulation.stayed_in_room())
+        end_times.append(simulation.end_time)
+
+
+
+
+    plt.plot(num_of_g_e, survivors,'-ok')
+    plt.title('Evacuation based on the guides (5%) knows two doors and entities that follow what they see in 4 meters')
+    plt.ylabel('number of survivors')
+    plt.xlabel('number of guides, entities in the room')
+    plt.plot(num_of_g_e, survivors, '-ok')
+    plt.show()
+
+# -------------------------------------------------------------------------- #
+
+def q4b():
+    num_of_guides = [(5,50), (10,100), (20,200), (30,300)]
+    room = Room(20, 20, [Position(0, 10),Position(20, 10)])
+    end_times = []
+    num_of_g_e = []
+    survivors=[]
+
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        num_of_g_e.append(str(N))
+        simulation.add_guides_randomly( N[0], 0.75, True)
+        simulation.add_entities_randomly(N[1], 0.75)
+
+        simulation.run_simulate()
+        survivors.append(N[1]+N[0]-simulation.stayed_in_room())
+        end_times.append(simulation.end_time)
+
+
+
+
+    plt.plot(num_of_g_e, survivors,'-ok')
+    plt.title('Evacuation based on the guides (10%) knows two doors and entities that follow what they see in 4 meters')
+    plt.ylabel('number of survivors')
+    plt.xlabel('number of guides, entities in the room')
+    plt.plot(num_of_g_e, survivors, '-ok')
+    plt.show()
+
+
+
+# -------------------------------------------------------------------------- #
+
+def q4c():
+    num_of_guides = [(0, 50), (0, 100), (0, 200), (0, 300)]
+    room = Room(20, 20, [Position(0, 10), Position(20, 10)])
+    end_times = []
+    num_of_g_e = []
+    survivors = []
+
+    for N in num_of_guides:
+        simulation = Simulation(room, [], [])
+        num_of_g_e.append(str(N))
+        simulation.add_guides_randomly(N[0], 0.75, True)
+        simulation.add_entities_randomly(N[1], 0.75)
+
+        simulation.run_simulate()
+        survivors.append(N[1] + N[0] - simulation.stayed_in_room())
+        end_times.append(simulation.end_time)
+
+    plt.plot(num_of_g_e, survivors, '-ok')
+    plt.title('Evacuation based on the guides (0%) knows two doors and entities that follow what they see in 4 meters')
+    plt.ylabel('number of survivors')
+    plt.xlabel('number of guides, entities in the room')
+    plt.plot(num_of_g_e, survivors, '-ok')
+    plt.show()
 
 
 # -------------------------------------------------------------------------- #
@@ -261,5 +394,8 @@ if __name__ == '__main__':
     # q2a()
     # q2b()
     # q2c()
+    #q4a()
+    #q4b()
+    q4c()
     # q5_1door()
     # q5_2doors()
